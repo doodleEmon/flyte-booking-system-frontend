@@ -26,6 +26,12 @@ const FlightDetails = () => {
   if (loading) return <p>Loading flight details...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  // Extract coordinates for the map
+  const routeCoordinates = [
+    [flight.originLat, flight.originLng],
+    [flight.destinationLat, flight.destinationLng],
+  ];
+
   return (
     <div>
       <h1>Flight Details</h1>
@@ -35,6 +41,14 @@ const FlightDetails = () => {
       <p><strong>Departure:</strong> {flight.date} at {flight.time}</p>
       <p><strong>Price:</strong> ${flight.price}</p>
       <p><strong>Available Seats:</strong> {flight.availableSeats}</p>
+      <div style={{ height: '400px', margin: '20px 0' }}>
+        <MapContainer center={routeCoordinates[0]} zoom={5} style={{ height: '100%', width: '100%' }}>
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <Marker position={routeCoordinates[0]} />
+          <Marker position={routeCoordinates[1]} />
+          <Polyline positions={routeCoordinates} color="blue" />
+        </MapContainer>
+      </div>
       <button onClick={() => navigate(`/book/${id}`)}>Book Now</button>
     </div>
   );
